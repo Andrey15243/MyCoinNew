@@ -24,7 +24,7 @@ btnNavigate.forEach(button => {
 
 
 // Показываем первую вкладку по умолчанию
-document.getElementById('clicker').classList.add('active');
+document.getElementById('main').classList.add('active');
     
 // Показываем первую кнопку как активную по умолчанию
 document.getElementById('mainBtn').classList.add('active');
