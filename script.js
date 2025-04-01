@@ -24,7 +24,7 @@ btnNavigate.forEach(button => {
 
 
 // Показываем первую вкладку по умолчанию
-document.getElementById('main').classList.add('active');
+document.getElementById('clicker').classList.add('active');
     
 // Показываем первую кнопку как активную по умолчанию
 document.getElementById('mainBtn').classList.add('active');
@@ -51,38 +51,54 @@ setInterval(() => {
 const clickerCoin = document.querySelector('#coinClickerId');
 const tapScore = document.querySelector('#tapScore');
 
-clickerCoin.addEventListener('mousedown', (event) => {
+function handlePress(event) {
+  event.preventDefault(); // Предотвращает скролл или зум
+  
+  let clientX, clientY;
+  if (event.touches) {
+    clientX = event.touches[0].clientX;
+    clientY = event.touches[0].clientY;
+  } else {
+    clientX = event.clientX;
+    clientY = event.clientY;
+  }
+
   const rect = clickerCoin.getBoundingClientRect();
-  const offsetX = event.clientX - rect.left - rect.width / 2;
-  const offsetY = event.clientY - rect.top - rect.height / 2;
+  const offsetX = clientX - rect.left - rect.width / 2;
+  const offsetY = clientY - rect.top - rect.height / 2;
 
   const deg = 60;
-
   const tiltX = (offsetY / rect.height) * deg;
   const tiltY = (offsetX / rect.width) * -deg;
 
   clickerCoin.style.setProperty('--tiltX', `${tiltX}deg`);
   clickerCoin.style.setProperty('--tiltY', `${tiltY}deg`);
 
-
   const plusOne = document.createElement('div');
   plusOne.classList.add('plusOne');
   plusOne.textContent = '+1';
-  plusOne.style.left = `${event.clientX - rect.left}px`
-  plusOne.style.top = `${event.clientY - rect.top}px`
-
-
+  plusOne.style.position = 'absolute';
+  plusOne.style.left = `${clientX - rect.left}px`;
+  plusOne.style.top = `${clientY - rect.top}px`;
 
   clickerCoin.parentElement.appendChild(plusOne);
 
   setTimeout(() => {
-    plusOne.remove()
-  }, 2000)
-});
+    plusOne.remove();
+  }, 2000);
+}
 
-// Сброс поворота при отпускании кнопки
-document.addEventListener('mouseup', () => {
+function handleRelease() {
   clickerCoin.style.setProperty('--tiltX', `0deg`);
   clickerCoin.style.setProperty('--tiltY', `0deg`);
-});
+}
 
+// Убираем конфликт с click-событием
+clickerCoin.addEventListener('click', (e) => e.preventDefault(), { passive: false });
+
+// Добавляем события для мыши и тачскрина
+clickerCoin.addEventListener('mousedown', handlePress);
+clickerCoin.addEventListener('touchstart', handlePress, { passive: false });
+
+document.addEventListener('mouseup', handleRelease);
+document.addEventListener('touchend', handleRelease);
