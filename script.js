@@ -24,7 +24,7 @@ btnNavigate.forEach(button => {
 
 
 // Показываем первую вкладку по умолчанию
-document.getElementById('main').classList.add('active');
+document.getElementById('clicker').classList.add('active');
     
 // Показываем первую кнопку как активную по умолчанию
 document.getElementById('mainBtn').classList.add('active');
@@ -64,6 +64,19 @@ function handlePress(event) {
   }
 
   const rect = clickerCoin.getBoundingClientRect();
+  
+  // Вычисляем центр монетки
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  // Проверяем, находится ли нажатие внутри круга
+  const distX = clientX - centerX;
+  const distY = clientY - centerY;
+  const distance = Math.sqrt(distX * distX + distY * distY);
+
+  if (distance > rect.width / 2) return; // Если клик за границей круга — игнорируем
+
+  // Если нажатие внутри круга, выполняем анимацию
   const offsetX = clientX - rect.left - rect.width / 2;
   const offsetY = clientY - rect.top - rect.height / 2;
 
@@ -102,3 +115,4 @@ clickerCoin.addEventListener('touchstart', handlePress, { passive: false });
 
 document.addEventListener('mouseup', handleRelease);
 document.addEventListener('touchend', handleRelease);
+
