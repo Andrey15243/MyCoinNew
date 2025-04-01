@@ -116,3 +116,9 @@ clickerCoin.addEventListener('touchstart', handlePress, { passive: false });
 document.addEventListener('mouseup', handleRelease);
 document.addEventListener('touchend', handleRelease);
 
+
+document.addEventListener('touchmove', (event) => {
+  if (!event.target.closest('.scrollable')) {
+    event.preventDefault();
+  }
+}, { passive: false });
